@@ -22,12 +22,21 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();
 
+        // For Swagger UI
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            app.MapOpenApi();
+            app.UseSwagger(); // serves /swagger/v1/swagger.json
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Taratarikor API v1");
+                c.RoutePrefix = "swagger"; // UI at /swagger
+            });
         }
 
         app.UseAuthorization();
