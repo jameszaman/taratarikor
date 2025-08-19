@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using Backend.Data;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+using EFCore.NamingConventions;
+
 
 namespace backend;
 
@@ -6,6 +11,12 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        var connectionString = builder.Configuration.GetConnectionString("Default");
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(connectionString)
+                .UseSnakeCaseNamingConvention()
+        );
 
         // Add services to the container.
         builder.Services.AddControllers();
