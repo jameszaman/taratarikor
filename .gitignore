@@ -2,3 +2,24 @@
 .vscode/
 .idea/
 
+# Build artifacts
+bin/
+obj/
+
+# VS files
+.vs/
+
+# User-specific files
+*.user
+*.suo
+
+# Logs
+*.log
+
+# Dotnet tools
+*.dbmdl
+*.jfm
+
+# Optional: ignore local secrets store
+secrets.json
+
