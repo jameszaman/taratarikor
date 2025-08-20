@@ -43,8 +43,6 @@ public class Program
 
         app.MapControllers();
 
-        app.MapGet("/", () => "Server Running");
-
         // A catch all route showing error if the user tries to access a route that does not exist.
         app.Use(async (context, next) =>
 {
