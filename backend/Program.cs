@@ -38,7 +38,6 @@ public class Program
         // Map attribute-routed controllers
         app.MapControllers();
 
-        // Proper catch-all AFTER controllers
         app.MapFallback(async context =>
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
