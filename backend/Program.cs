@@ -3,7 +3,6 @@ using Backend.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using EFCore.NamingConventions;
 
-
 namespace backend;
 
 public class Program
@@ -12,45 +11,37 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        var connectionString = builder.Configuration.GetConnectionString("Default");
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(connectionString)
-                .UseSnakeCaseNamingConvention()
-        );
+        var cs = builder.Configuration.GetConnectionString("Default");
+        builder.Services.AddDbContext<AppDbContext>(opt =>
+            opt.UseNpgsql(cs).UseSnakeCaseNamingConvention());
 
-        // Add services to the container.
         builder.Services.AddControllers();
-        builder.Services.AddOpenApi();
-
-        // For Swagger UI
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwagger(); // serves /swagger/v1/swagger.json
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Taratarikor API v1");
-                c.RoutePrefix = "swagger"; // UI at /swagger
+                c.RoutePrefix = "swagger";
             });
         }
 
+        // (Add auth later if needed)
+        // app.UseAuthentication();
         app.UseAuthorization();
 
+        // Map attribute-routed controllers
         app.MapControllers();
 
-        // A catch all route showing error if the user tries to access a route that does not exist.
-        app.Use(async (context, next) =>
-{
-            await next(); // let other middleware/controllers handle first
-            if (context.Response.StatusCode == StatusCodes.Status404NotFound && !context.Response.HasStarted)
-            {
-                await context.Response.WriteAsJsonAsync(new { message = "Route not found" });
-            }
+        app.MapFallback(async context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            await context.Response.WriteAsJsonAsync(new { message = "Route not found" });
         });
 
         app.Run();

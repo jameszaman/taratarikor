@@ -40,11 +40,13 @@ dotnet ef database update
 
 ### Run
 
+Use Either of the 2 commands:
 ```bash
 cd project/backend
 dotnet watch run
 ```
 
+Or from root,
 ```bash
 dotnet watch run --project backend/backend.csproj
 ```
