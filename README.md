@@ -45,5 +45,9 @@ cd project/backend
 dotnet watch run
 ```
 
+```bash
+dotnet watch run --project backend/backend.csproj
+```
+
 API runs on [http://localhost:5000](http://localhost:5000).
 
