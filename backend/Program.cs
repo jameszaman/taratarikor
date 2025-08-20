@@ -43,11 +43,16 @@ public class Program
 
         app.MapControllers();
 
+        app.MapGet("/", () => "Server Running");
+
         // A catch all route showing error if the user tries to access a route that does not exist.
-        app.Run(async context =>
-        {
-            context.Response.StatusCode = StatusCodes.Status404NotFound;
-            await context.Response.WriteAsJsonAsync(new { message = "Route not found" });
+        app.Use(async (context, next) =>
+{
+            await next(); // let other middleware/controllers handle first
+            if (context.Response.StatusCode == StatusCodes.Status404NotFound && !context.Response.HasStarted)
+            {
+                await context.Response.WriteAsJsonAsync(new { message = "Route not found" });
+            }
         });
 
         app.Run();
